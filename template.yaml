@@ -26,6 +26,12 @@ Resources:
         - AWSXrayWriteOnlyAccess
         - S3CrudPolicy:
             BucketName: !Ref TranslatedFiles
+        - Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Resource: !Sub ${AWS::StackName}-originalf-${AWS::AccountId}
+              Action:
+                - s3:GetObject
       Events:
         OriginalFiles:
           Type: S3
