@@ -8,7 +8,7 @@ Resources:
   TranslatedFiles:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::StackName}-originalf-${AWS::AccountId}
+      BucketName: !Sub ${AWS::StackName}-translate-${AWS::AccountId}
   TranslateFunction:
     Type: AWS::Serverless::Function
     Properties:
