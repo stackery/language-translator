@@ -29,10 +29,7 @@ Resources:
         - Version: 2012-10-17
           Statement:
             - Effect: Allow
-              Resource: !Join
-                - ''
-                - - !GetAtt OriginalFiles.Arn
-                  - /*
+              Resource: !Sub arn:aws:s3:::${AWS::StackName}-originalf-${AWS::AccountId}/*
               Action:
                 - s3:GetObject
       Events:
