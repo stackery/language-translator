@@ -18,7 +18,8 @@ exports.handler = async (event, context) => {
       Key
     }).promise();
     
-    console.log(bucketContents);
+    console.log(bucketContents.Body.toString());
+    
     
   } catch (error) {
     console.log(error);
