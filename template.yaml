@@ -32,6 +32,12 @@ Resources:
               Resource: !Sub arn:aws:s3:::${AWS::StackName}-originalf-${AWS::AccountId}/*
               Action:
                 - s3:GetObject
+        - Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Resource: '*'
+              Action:
+                - translate:TranslateText              
       Events:
         OriginalFiles:
           Type: S3

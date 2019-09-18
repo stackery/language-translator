@@ -19,6 +19,16 @@ exports.handler = async (event, context) => {
     }).promise();
     
     console.log(bucketContents.Body.toString());
+    const Text = bucketContents.Body.toString();
+    const TranslateParams = {
+      SourceLanguageCode: 'en',
+      TargetLanguageCode: 'ko',
+      Text
+    };
+    
+    const TranslatedText = await translate.translateText(TranslateParams).promise();
+    console.log(TranslatedText)
+
     
     
   } catch (error) {
