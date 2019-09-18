@@ -37,7 +37,7 @@ Resources:
             - Effect: Allow
               Resource: '*'
               Action:
-                - translate:TranslateText              
+                - translate:TranslateText
       Events:
         OriginalFiles:
           Type: S3
@@ -45,7 +45,6 @@ Resources:
             Bucket: !Ref OriginalFiles
             Events:
               - s3:ObjectCreated:*
-              - s3:ObjectRemoved:*
       Environment:
         Variables:
           BUCKET_NAME: !Ref TranslatedFiles

@@ -2,7 +2,6 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 const translate = new AWS.Translate();
 
-
 exports.handler = async (event, context) => {
   // Log the event argument for debugging and for use in local development.
   console.log(JSON.stringify(event, undefined, 2));
@@ -17,7 +16,7 @@ exports.handler = async (event, context) => {
       Bucket: bucketName,
       Key
     }).promise();
-    
+
     console.log(bucketContents.Body.toString());
     const Text = bucketContents.Body.toString();
     const TranslateParams = {
@@ -25,22 +24,20 @@ exports.handler = async (event, context) => {
       TargetLanguageCode: 'ko',
       Text
     };
-    
+
     const TranslatedText = await translate.translateText(TranslateParams).promise();
-    console.log(TranslatedText)
+    console.log(TranslatedText);
 
     const PutObjectParams = {
-      Bucket: process.env.BUCKET_NAME, 
+      Bucket: process.env.BUCKET_NAME,
       Key,
       Body: TranslatedText
     };
     const PutObjectResult = await s3.putObject(PutObjectParams).promise();
     console.log(PutObjectResult);
-
-    
   } catch (error) {
     console.log(error);
-
   }
+
   return {};
 };
