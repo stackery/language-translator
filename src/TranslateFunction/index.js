@@ -17,21 +17,22 @@ exports.handler = async (event, context) => {
       Key
     }).promise();
 
-    console.log(bucketContents.Body.toString());
     const Text = bucketContents.Body.toString();
+    console.log(Text);
+
     const TranslateParams = {
       SourceLanguageCode: 'en',
-      TargetLanguageCode: 'ko',
+      TargetLanguageCode: 'es',
       Text
     };
 
-    const TranslatedText = await translate.translateText(TranslateParams).promise();
-    console.log(TranslatedText);
+    const translatedText = await translate.translateText(TranslateParams).promise();
+    console.log(translatedText);
 
     const PutObjectParams = {
       Bucket: process.env.BUCKET_NAME,
       Key,
-      Body: TranslatedText
+      Body: translatedText.TranslatedText
     };
     const PutObjectResult = await s3.putObject(PutObjectParams).promise();
     console.log(PutObjectResult);
