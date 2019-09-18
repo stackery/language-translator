@@ -1,14 +1,8 @@
-# Stackery Blank SAM Template
+# Langugage Translator
 
-This is a sample template for a serverless AWS Lambda application.
+This is a tool that will translate text into another language.
 
-Here is an overview of the files:
-
-```text
-.
-├── deployHooks/                       <-- Directory for storing deployment hooks
-├── .gitignore                         <-- Gitignore for Stackery
-├── .stackery-config.yaml              <-- Default CLI parameters for root directory
-├── README.md                          <-- This README file
-└── template.yaml                      <-- SAM infrastructure-as-code template
-```
+## Directions to Use
+1. Deploy the stack. It is recommended to use [Stackery](https://www.stackery.io/)
+2. Upload a text file to the `OriginalFiles` s3 bucket in the AWS console
+3. The translated text will appear in the `TranslatedFiles` s3 bucket
