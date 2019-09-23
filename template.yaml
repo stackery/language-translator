@@ -38,6 +38,8 @@ Resources:
               Resource: '*'
               Action:
                 - translate:TranslateText
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranslationsTable
       Events:
         OriginalFiles:
           Type: S3
@@ -49,6 +51,21 @@ Resources:
         Variables:
           BUCKET_NAME: !Ref TranslatedFiles
           BUCKET_ARN: !GetAtt TranslatedFiles.Arn
+          TABLE_NAME: !Ref TranslationsTable
+          TABLE_ARN: !GetAtt TranslationsTable.Arn
+  TranslationsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      TableName: !Sub ${AWS::StackName}-TranslationsTable
 Parameters:
   StackTagName:
     Type: String
