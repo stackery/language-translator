@@ -9,9 +9,6 @@ const credentials = new AWS.Credentials(Config.accessKeyId, Config.secret);
 AWS.config.credentials = credentials;
 const s3 = new AWS.S3({ region: 'us-west-2' });
 
-console.log(Config.accessKeyId);
-console.log(Config.secret);
-
 class App extends Component {
   constructor () {
     super();
