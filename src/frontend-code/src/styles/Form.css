@@ -16,3 +16,9 @@ select {
   color: black;
   border: 1px solid black;
 }
+
+.messageText {
+  margin: 1% auto 1% 250px;
+  color: blue;
+  min-height: 5px;
+}

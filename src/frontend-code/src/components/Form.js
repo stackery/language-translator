@@ -44,8 +44,9 @@ function Form (props) {
         <select name='targetLanguage' value={props.targetLanguage} onChange={props.onTargetLanguageChange}>
           { options }
         </select>
-        <input onChange={props.onFileChange} type='file' value={props.file} />
+        <input onChange={props.onFileChange} type='file' key={props.inputKey} />
         <button type='submit' className='submitButton'>Submit</button>
+        <span className='messageText'>{props.message}</span>
       </form>
     </div>
   );

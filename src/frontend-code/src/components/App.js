@@ -12,10 +12,12 @@ const s3 = new AWS.S3({ region: 'us-west-2' });
 class App extends Component {
   constructor () {
     super();
-    this.file = '';
+    this.file = null;
     this.state = {
       targetLanguage: 'ar',
-      sourceLanguage: 'en'
+      sourceLanguage: 'en',
+      message: '',
+      inputKey: Date.now()
     };
 
     this.handleFileChange = this.handleFileChange.bind(this);
@@ -44,7 +46,7 @@ class App extends Component {
   async handleSubmit (event) {
     event.preventDefault();
 
-    if (this.file === '') {
+    if (!this.file) {
       alert('Please select a file to upload');
       return;
     }
@@ -66,30 +68,37 @@ class App extends Component {
         ContentType: 'text/plain'
       }).promise();
 
-      this.file = '';
+      this.file = null;
       this.setState({
         sourceLanguage: 'en',
-        targetLanguage: 'ar'
+        targetLanguage: 'ar',
+        message: 'Success',
+        inputKey: Date.now()
       });
     } catch (error) {
       console.log('AN ERROR OCURRED');
       console.log(error);
+      this.setState({
+        message: 'There was an error'
+      });
     }
   }
 
   render () {
     console.log(this.state);
+    console.log('file ', this.file);
     return (
       <div className='container'>
         <h1>Language Translator</h1>
         <Form
-          file={this.file}
+          inputKey={this.state.inputKey}
           targetLanguage={this.state.targetLanguage}
           sourceLanguage={this.state.sourceLanguage}
           onSourceLanguageChange={this.handleSourceLanguageChange}
           onTargetLanguageChange={this.handleTargetLanguageChange}
           onFileChange={this.handleFileChange}
           onSubmit={this.handleSubmit}
+          message={this.state.message}
         />
       </div>
     );
