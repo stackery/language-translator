@@ -66,12 +66,6 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
       TableName: !Sub ${AWS::StackName}-TranslationsTable
-  Frontend:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub ${AWS::StackName}-frontend-${AWS::AccountId}
-      WebsiteConfiguration:
-        IndexDocument: index.html
 Parameters:
   StackTagName:
     Type: String
