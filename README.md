@@ -12,20 +12,27 @@ This is a tool that will translate text into another language.
 
 ## Frontend
 - add the following CORS configuration to your `OriginalFiles` bucket
+  ```
+  <?xml version="1.0" encoding="UTF-8"?>
+  <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+  <CORSRule>
+      <AllowedOrigin>*</AllowedOrigin>
+      <AllowedMethod>PUT</AllowedMethod>
+      <AllowedMethod>GET</AllowedMethod>
+      <AllowedMethod>POST</AllowedMethod>
+      <AllowedMethod>DELETE</AllowedMethod>
+      <AllowedHeader>*</AllowedHeader>
+  </CORSRule>
+  </CORSConfiguration>
+  ```
+- create an iam user with `s3:ObjectPut` permission to your `OriginalFiles` bucket enable programic access and take note of the access key/secret access key. Add a file `src/frontend-code/config.js` with the following:
+  ```
+  export default {
+    accessKeyId: 'YOUR-ACCESS-KEY-ID',
+    secret: 'YOUR-SECRET-ACCESS-KEY'
+  };
+  ```
 
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
-<CORSRule>
-    <AllowedOrigin>*</AllowedOrigin>
-    <AllowedMethod>PUT</AllowedMethod>
-    <AllowedMethod>GET</AllowedMethod>
-    <AllowedMethod>POST</AllowedMethod>
-    <AllowedMethod>DELETE</AllowedMethod>
-    <AllowedHeader>*</AllowedHeader>
-</CORSRule>
-</CORSConfiguration>
-```
 
 ## Notes
 - `translateText` has a [limit](https://docs.aws.amazon.com/translate/latest/dg/what-is-limits.html) - ensure your filesize does not exceed this
