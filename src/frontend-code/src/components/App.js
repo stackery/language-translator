@@ -14,10 +14,12 @@ class App extends Component {
     super();
     this.file = '';
     this.state = {
-      targetLanguage: 'ar'
+      targetLanguage: 'ar',
+      sourceLanguage: 'en'
     };
 
     this.handleFileChange = this.handleFileChange.bind(this);
+    this.handleSourceLanguageChange = this.handleSourceLanguageChange.bind(this);
     this.handleTargetLanguageChange = this.handleTargetLanguageChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -25,6 +27,12 @@ class App extends Component {
   handleFileChange (event) {
     this.file = event.target.files[0];
     console.log(this.file);
+  }
+
+  handleSourceLanguageChange (event) {
+    this.setState({
+      sourceLanguage: event.target.value
+    });
   }
 
   handleTargetLanguageChange (event) {
@@ -36,29 +44,33 @@ class App extends Component {
   async handleSubmit (event) {
     event.preventDefault();
 
-    if (this.file && this.file.size > 5000) {
+    if (this.file === '') {
+      alert('Please select a file to upload');
+      return;
+    }
+    if (this.file.size > 5000) {
       alert('Please pick a file smaller than 5000 bytes');
       return;
     }
 
-    if (this.file && this.file.type !== 'text/plain') {
+    if (this.file.type !== 'text/plain') {
       alert('Please select a plaintext file');
       return;
     }
 
     try {
-      console.log('START UPLOAD');
-      const result = await s3.putObject({
+      await s3.putObject({
         Body: this.file,
         Bucket: 'language-translator-development-originalf-053662045684',
-        Key: `en/${this.state.targetLanguage}/${this.file.name}`,
+        Key: `${this.state.sourceLanguage}/${this.state.targetLanguage}/${this.file.name}`,
         ContentType: 'text/plain'
       }).promise();
+
       this.file = '';
       this.setState({
+        sourceLanguage: 'en',
         targetLanguage: 'ar'
       });
-      console.log('FINISH UPLOAD ', result);
     } catch (error) {
       console.log('AN ERROR OCURRED');
       console.log(error);
@@ -73,6 +85,8 @@ class App extends Component {
         <Form
           file={this.file}
           targetLanguage={this.state.targetLanguage}
+          sourceLanguage={this.state.sourceLanguage}
+          onSourceLanguageChange={this.handleSourceLanguageChange}
           onTargetLanguageChange={this.handleTargetLanguageChange}
           onFileChange={this.handleFileChange}
           onSubmit={this.handleSubmit}
