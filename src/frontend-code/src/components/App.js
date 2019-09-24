@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
-import { Storage } from 'aws-amplify';
 
+import Config from '../config';
 import Form from './Form';
 import '../styles/App.css';
+
+const AWS = require('aws-sdk');
+const credentials = new AWS.Credentials(Config.accessKeyId, Config.secret);
+AWS.config.credentials = credentials;
+const s3 = new AWS.S3({ region: 'us-west-2' });
+
+console.log(Config.accessKeyId);
+console.log(Config.secret);
 
 class App extends Component {
   constructor () {
@@ -27,11 +35,21 @@ class App extends Component {
       return;
     }
 
+    if (this.file && this.file.type !== 'text/plain') {
+      alert('Please select a plaintext file');
+      return;
+    }
+
     try {
-      await Storage.put(`en/es/${this.file.name}`, this.file, {
-        contentType: this.file.type
-      });
+      console.log('START UPLOAD');
+      const result = await s3.putObject({
+        Body: this.file,
+        Bucket: 'language-translator-development-originalf-053662045684',
+        Key: `en/ru/${this.file.name}`,
+        ContentType: 'text/plain'
+      }).promise();
       this.file = null;
+      console.log('FINISH UPLOAD ', result);
     } catch (error) {
       console.log('AN ERROR OCURRED');
       console.log(error);
