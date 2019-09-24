@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Config from '../config';
 import Form from './Form';
+import Table from './Table';
 import '../styles/App.css';
 
 const AWS = require('aws-sdk');
@@ -17,7 +18,8 @@ class App extends Component {
       targetLanguage: 'ar',
       sourceLanguage: 'en',
       message: '',
-      inputKey: Date.now()
+      inputKey: Date.now(),
+      rows: []
     };
 
     this.handleFileChange = this.handleFileChange.bind(this);
@@ -28,7 +30,6 @@ class App extends Component {
 
   handleFileChange (event) {
     this.file = event.target.files[0];
-    console.log(this.file);
   }
 
   handleSourceLanguageChange (event) {
@@ -85,8 +86,6 @@ class App extends Component {
   }
 
   render () {
-    console.log(this.state);
-    console.log('file ', this.file);
     return (
       <div className='container'>
         <h1>Language Translator</h1>
@@ -100,6 +99,7 @@ class App extends Component {
           onSubmit={this.handleSubmit}
           message={this.state.message}
         />
+        <Table rows={this.state.rows} />
       </div>
     );
   }

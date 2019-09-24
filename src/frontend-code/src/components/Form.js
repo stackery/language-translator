@@ -34,7 +34,7 @@ function Form (props) {
   );
 
   return (
-    <div className='form-container'>
+    <div className='formContainer'>
       <form onSubmit={props.onSubmit}>
         <label>Source Language</label>
         <select name='sourceLanguage' value={props.sourceLanguage} onChange={props.onSourceLanguageChange}>
