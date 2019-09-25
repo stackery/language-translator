@@ -29,18 +29,25 @@ class App extends Component {
   }
 
   handleFileChange (event) {
+    if (this.state.message !== '') {
+      this.setState({
+        message: ''
+      });
+    }
     this.file = event.target.files[0];
   }
 
   handleSourceLanguageChange (event) {
     this.setState({
-      sourceLanguage: event.target.value
+      sourceLanguage: event.target.value,
+      message: ''
     });
   }
 
   handleTargetLanguageChange (event) {
     this.setState({
-      targetLanguage: event.target.value
+      targetLanguage: event.target.value,
+      message: ''
     });
   }
 

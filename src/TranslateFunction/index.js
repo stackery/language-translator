@@ -48,7 +48,8 @@ exports.handler = async event => {
         SourceLanguageCode,
         TargetLanguageCode,
         OriginalText: Text,
-        TranslatedText: translatedText.TranslatedText
+        TranslatedText: translatedText.TranslatedText,
+        Timestamp: Date.now()
       }
     };
 
