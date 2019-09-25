@@ -10,6 +10,8 @@ const credentials = new AWS.Credentials(Config.accessKeyId, Config.secret);
 AWS.config.credentials = credentials;
 const s3 = new AWS.S3({ region: 'us-west-2' });
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 class App extends Component {
   constructor () {
     super();
@@ -42,25 +44,18 @@ class App extends Component {
   }
 
   handleFileChange (event) {
-    if (this.state.message !== '') {
-      this.setState({
-        message: ''
-      });
-    }
     this.file = event.target.files[0];
   }
 
   handleSourceLanguageChange (event) {
     this.setState({
-      sourceLanguage: event.target.value,
-      message: ''
+      sourceLanguage: event.target.value
     });
   }
 
   handleTargetLanguageChange (event) {
     this.setState({
-      targetLanguage: event.target.value,
-      message: ''
+      targetLanguage: event.target.value
     });
   }
 
@@ -95,19 +90,40 @@ class App extends Component {
       this.setState({
         sourceLanguage: 'en',
         targetLanguage: 'ar',
-        message: 'Success',
+        message: 'Processing...',
         inputKey: Date.now()
       });
 
-      // TODO add retry behavior if result is { Item: 'not found' }
+      // It takes a while for the translation to process
+      // Wait 5 seconds then get the item from the dynamoDB table
+      // TODO: add more sophisticated retry behavior
+      await delay(3000);
       const item = await fetch(`${Config.apiEndpoint}/translations?key=${Key}`);
-      const rowsJson = await item.json();
-      console.log('RESULT ', rowsJson);
+      const rowJson = await item.json();
+      console.log('RESULT ', rowJson);
+      // Item exists
+      if (!('Item' in rowJson)) {
+        this.setState({
+          rows: [
+            rowJson,
+            ...this.state.rows
+          ],
+          message: 'Success'
+        });
+      }
+      await delay(2000);
+      this.setState({
+        message: ''
+      });
     } catch (error) {
       console.log('AN ERROR OCURRED');
       console.log(error);
       this.setState({
         message: 'There was an error'
+      });
+      await delay(2000);
+      this.setState({
+        message: ''
       });
     }
   }
