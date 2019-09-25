@@ -28,6 +28,19 @@ class App extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  async componentDidMount () {
+    try {
+      // Note fetch may not work in IE11
+      const rows = await fetch(`${Config.apiEndpoint}/translations`);
+      const rowsJson = await rows.json();
+      this.setState({
+        rows: rowsJson
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   handleFileChange (event) {
     if (this.state.message !== '') {
       this.setState({
@@ -71,7 +84,7 @@ class App extends Component {
     try {
       await s3.putObject({
         Body: this.file,
-        Bucket: 'language-translator-development-originalf-053662045684',
+        Bucket: Config.originalBucket,
         Key: `${this.state.sourceLanguage}/${this.state.targetLanguage}/${this.file.name}`,
         ContentType: 'text/plain'
       }).promise();
@@ -83,6 +96,8 @@ class App extends Component {
         message: 'Success',
         inputKey: Date.now()
       });
+
+      // TODO add the new item to the table
     } catch (error) {
       console.log('AN ERROR OCURRED');
       console.log(error);

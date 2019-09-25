@@ -17,11 +17,11 @@ function Table (props) {
 
       <tbody>
         {props.rows.map(row => (
-          <tr key={row.key}>
-            <td>{row.key}</td>
-            <td>{row.SourceLangage}</td>
+          <tr key={row.Key}>
+            <td>{row.Key}</td>
+            <td>{row.SourceLanguageCode}</td>
             <td>{row.OriginalText}</td>
-            <td>{row.TargetLanguage}</td>
+            <td>{row.TargetLanguageCode}</td>
             <td>{row.TranslatedText}</td>
           </tr>
         ))}
