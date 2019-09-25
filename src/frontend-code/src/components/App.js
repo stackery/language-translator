@@ -82,10 +82,12 @@ class App extends Component {
     }
 
     try {
+      const Key = `${this.state.sourceLanguage}/${this.state.targetLanguage}/${this.file.name}`;
+
       await s3.putObject({
         Body: this.file,
         Bucket: Config.originalBucket,
-        Key: `${this.state.sourceLanguage}/${this.state.targetLanguage}/${this.file.name}`,
+        Key,
         ContentType: 'text/plain'
       }).promise();
 
@@ -97,7 +99,10 @@ class App extends Component {
         inputKey: Date.now()
       });
 
-      // TODO add the new item to the table
+      // TODO add retry behavior if result is { Item: 'not found' }
+      const item = await fetch(`${Config.apiEndpoint}/translations?key=${Key}`);
+      const rowsJson = await item.json();
+      console.log('RESULT ', rowsJson);
     } catch (error) {
       console.log('AN ERROR OCURRED');
       console.log(error);
