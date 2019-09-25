@@ -8,7 +8,7 @@ import '../styles/App.css';
 const AWS = require('aws-sdk');
 const credentials = new AWS.Credentials(Config.accessKeyId, Config.secret);
 AWS.config.credentials = credentials;
-const s3 = new AWS.S3({ region: 'us-west-2' });
+const s3 = new AWS.S3({ region: Config.region });
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
