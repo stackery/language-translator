@@ -29,7 +29,10 @@ This is a tool that will translate text into another language.
   ```
   export default {
     accessKeyId: 'YOUR-ACCESS-KEY-ID',
-    secret: 'YOUR-SECRET-ACCESS-KEY'
+    secret: 'YOUR-SECRET-ACCESS-KEY',
+    region: 'YOUR-REGION',
+    apiEndpoint: 'YOUR-API-ENDPOINT',
+    originalBucket: 'YOUR-ORIGINAL-BUCKET-NAME'
   };
   ```
 

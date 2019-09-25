@@ -100,7 +100,7 @@ class App extends Component {
       await delay(3000);
       const item = await fetch(`${Config.apiEndpoint}/translations?key=${Key}`);
       const rowJson = await item.json();
-      console.log('RESULT ', rowJson);
+
       // Item exists
       if (!('Item' in rowJson)) {
         this.setState({
