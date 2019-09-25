@@ -95,7 +95,7 @@ class App extends Component {
       });
 
       // It takes a while for the translation to process
-      // Wait 5 seconds then get the item from the dynamoDB table
+      // Wait 3 seconds then get the item from the dynamoDB table
       // TODO: add more sophisticated retry behavior
       await delay(3000);
       const item = await fetch(`${Config.apiEndpoint}/translations?key=${Key}`);
