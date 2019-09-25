@@ -3,6 +3,14 @@ import React from 'react';
 import '../styles/Table.css';
 
 function Table (props) {
+  // Sort rows by timestamp
+  // TODO fix this serverside
+  const sortedRows = props.rows.sort((a, b) => {
+    a = new Date(a.Timestamp);
+    b = new Date(b.Timestamp);
+    return a > b ? -1 : a < b ? 1 : 0;
+  });
+
   return (
     <table>
       <thead>
