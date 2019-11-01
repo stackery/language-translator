@@ -10,6 +10,8 @@ exports.handler = async event => {
 
   const originalBucketName = event.Records[0].s3.bucket.name;
   const Key = event.Records[0].s3.object.key;
+  const SourceLanguageCode = Key.split('/')[0];
+  const TargetLanguageCode = Key.split('/')[1];
 
   try {
     const bucketContents = await s3.getObject({
@@ -21,8 +23,8 @@ exports.handler = async event => {
     console.log(Text);
 
     const TranslateParams = {
-      SourceLanguageCode: 'en',
-      TargetLanguageCode: 'es',
+      SourceLanguageCode,
+      TargetLanguageCode,
       Text
     };
 
