@@ -1,12 +1,13 @@
 const AWS = require('aws-sdk');
+const cldrSegmentation = require('cldr-segmentation');
 const s3 = new AWS.S3();
 const translate = new AWS.Translate();
 
 exports.handler = async event => {
   // Log the event argument for debugging and for use in local development.
-  console.log(JSON.stringify(event, undefined, 2));
-  console.log(event.Records[0].s3.bucket.name);
-  console.log(event.Records[0].s3.object.key);
+  console.log('Event: ', JSON.stringify(event, undefined, 2));
+  console.log(`Bucket Name: ${event.Records[0].s3.bucket.name}`);
+  console.log(`Bucket Key: ${event.Records[0].s3.object.key}`);
 
   const originalBucketName = event.Records[0].s3.bucket.name;
   const Key = event.Records[0].s3.object.key;
@@ -20,7 +21,7 @@ exports.handler = async event => {
     }).promise();
 
     const Text = bucketContents.Body.toString();
-    console.log(Text);
+    console.log(`Original text: ${Text}`);
 
     const TranslateParams = {
       SourceLanguageCode,
@@ -29,7 +30,7 @@ exports.handler = async event => {
     };
 
     const translatedText = await translate.translateText(TranslateParams).promise();
-    console.log(translatedText);
+    console.log(`Translated text: ${translatedText}`);
 
     const putObjectParams = {
       Bucket: process.env.BUCKET_NAME,
@@ -38,8 +39,8 @@ exports.handler = async event => {
     };
 
     const putObjectResult = await s3.putObject(putObjectParams).promise();
-    console.log(putObjectResult);
+    console.log(`Put object result: ${putObjectResult}`);
   } catch (error) {
-    console.log(error);
+    console.log(`An error ocurred: ${JSON.stringify(error, null, '\t')}`);
   }
 };
