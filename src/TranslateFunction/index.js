@@ -30,7 +30,7 @@ exports.handler = async event => {
     };
 
     const translatedText = await translate.translateText(TranslateParams).promise();
-    console.log(`Translated text: ${translatedText}`);
+    console.log(`Translated text: ${JSON.stringify(translatedText, null, '\t')}`);
 
     const putObjectParams = {
       Bucket: process.env.BUCKET_NAME,
@@ -39,7 +39,7 @@ exports.handler = async event => {
     };
 
     const putObjectResult = await s3.putObject(putObjectParams).promise();
-    console.log(`Put object result: ${putObjectResult}`);
+    console.log(`Put object result: ${JSON.stringify(putObjectResult, null, '\t')}`);
   } catch (error) {
     console.log(`An error ocurred: ${JSON.stringify(error, null, '\t')}`);
   }
