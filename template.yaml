@@ -5,6 +5,11 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub ${AWS::StackName}-originalf-${AWS::AccountId}
+      CorsConfiguration:
+        CorsRules:
+        - AllowedOrigins: ['*']
+          AllowedMethods: [PUT, POST, GET, DELETE]
+          AllowedHeaders: ['*']
   TranslatedFiles:
     Type: AWS::S3::Bucket
     Properties:
