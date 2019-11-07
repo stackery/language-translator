@@ -1,0 +1,8 @@
+{
+  "name": "function",
+  "version": "1.0.0",
+  "dependencies": {
+    "aws-sdk": "^2.566.0",
+    "cfn-custom-resource": "^4.0.16"
+  }
+}
