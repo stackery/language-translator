@@ -1,7 +1,8 @@
 {
   "name": "translatefunction",
   "version": "1.0.0",
-  "devDependencies": {
-    "aws-sdk": "~2"
+  "dependencies": {
+    "aws-sdk": "~2",
+    "cldr-segmentation": "^1.0.0"
   }
 }
