@@ -66,10 +66,6 @@ class App extends Component {
       alert('Please select a file to upload');
       return;
     }
-    if (this.file.size > 5000) {
-      alert('Please pick a file smaller than 5000 bytes');
-      return;
-    }
 
     if (this.file.type !== 'text/plain') {
       alert('Please select a plaintext file');
@@ -95,9 +91,9 @@ class App extends Component {
       });
 
       // It takes a while for the translation to process
-      // Wait 3 seconds then get the item from the dynamoDB table
-      // TODO: add more sophisticated retry behavior
-      await delay(3000);
+      // Wait 4 seconds then get the item from the dynamoDB table
+      // TODO: add more sophisticated retry behavior with websockets, IoT, or something similar
+      await delay(4000);
       const item = await fetch(`${Config.apiEndpoint}/translations?key=${Key}`);
       const rowJson = await item.json();
 
