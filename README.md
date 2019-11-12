@@ -21,7 +21,7 @@ This is a tool that will translate text into another language. It is recommended
                 "s3:PutObject"
             ],
             "Resource": [
-                "arn:aws:s3:::language-translator-development-originalf-<YOUR AWS ACCOUNT ID HERE>/*"
+                "arn:aws:s3:::language-translator-<YOUR STACKERY ENVIRONMENT NAME HERE>-originalf-<YOUR AWS ACCOUNT ID HERE>/*"
             ]
         }
     ]
