@@ -38,7 +38,12 @@ exports.handler = async event => {
 
     try {
       const { Items } = await dynamodb.scan(listParams).promise();
-      response = Items;
+      /* TODO: Figure out if there's a way to sort scan results from dynamo
+      * Initial search showed this may not be an option and/or is hard to implement
+      */
+      const sortedItems = Items.sort((a, b) => b.Timestamp - a.Timestamp);
+      console.log('SORTED RESULTS FROM DB ', sortedItems);
+      response = sortedItems;
       statusCode = 200;
     } catch (err) {
       console.log('An error occurred scanning the table: ', err);
