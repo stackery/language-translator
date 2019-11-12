@@ -106,20 +106,18 @@ class App extends Component {
           ],
           message: 'Success'
         });
+      } else {
+        // Not desirable longterm, but at least there's some messaging
+        // on why the translation didn't populate in the UI for now
+        this.setState({
+          message: 'Item still processing. Come back later and refresh your browser to see the results.'
+        });
       }
-      await delay(2000);
-      this.setState({
-        message: ''
-      });
     } catch (error) {
       console.log('AN ERROR OCURRED');
       console.log(error);
       this.setState({
         message: 'There was an error'
-      });
-      await delay(2000);
-      this.setState({
-        message: ''
       });
     }
   }
