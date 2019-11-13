@@ -10,8 +10,6 @@ const credentials = new AWS.Credentials(Config.accessKeyId, Config.secret);
 AWS.config.credentials = credentials;
 const s3 = new AWS.S3({ region: Config.region });
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
 class App extends Component {
   constructor () {
     super();
@@ -90,27 +88,44 @@ class App extends Component {
         inputKey: Date.now()
       });
 
-      // It takes a while for the translation to process
-      // Wait 4 seconds then get the item from the dynamoDB table
-      // TODO: add more sophisticated retry behavior with websockets, IoT, or something similar
-      await delay(4000);
-      const item = await fetch(`${Config.apiEndpoint}/translations?key=${Key}`);
-      const rowJson = await item.json();
+      /** TODO: add more sophisticated retry behavior with websockets, IoT, or something similar
+       * Longer translations take a while to process
+       * Attempt to fetch the new translation every 4 seconds until found
+       * Stop retry behavior after 5 min
+       */
+      const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+      const interval = 4000;
+      let totalWaitTime = 300000;
+      let itemFound = false;
 
-      // Item exists
-      if (!('Item' in rowJson)) {
+      while (totalWaitTime > 0) {
+        await delay(interval);
+        const item = await fetch(`${Config.apiEndpoint}/translations?key=${Key}`);
+        const rowJson = await item.json();
+
+        // The translation is complete
+        if (!('Item' in rowJson)) {
+          this.setState({
+            rows: [
+              rowJson,
+              ...this.state.rows
+            ],
+            message: 'Success'
+          });
+          itemFound = true;
+          break;
+        }
+        totalWaitTime -= interval;
+      }
+
+      if (itemFound) {
+        await delay(interval);
         this.setState({
-          rows: [
-            rowJson,
-            ...this.state.rows
-          ],
-          message: 'Success'
+          message: ''
         });
       } else {
-        // Not desirable longterm, but at least there's some messaging
-        // on why the translation didn't populate in the UI for now
         this.setState({
-          message: 'Item still processing. Come back later and refresh your browser to see the results.'
+          message: 'Item still processing...check back later and refresh your browser to see the translation.'
         });
       }
     } catch (error) {
