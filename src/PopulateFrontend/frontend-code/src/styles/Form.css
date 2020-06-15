@@ -1,0 +1,24 @@
+.formContainer {
+  margin: 2% auto;
+  padding: 1% auto;
+}
+
+select {
+  display: block;
+  margin-bottom: 2%;
+}
+
+.submitButton {
+  display: block;
+  margin: 1% auto 0.5% 250px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+
+.messageText {
+  margin: 1% auto 1% 250px;
+  color: blue;
+  min-height: 5px;
+}

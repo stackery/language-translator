@@ -1,0 +1,11 @@
+{
+  "name": "populate-frontend",
+  "version": "1.0.0",
+  "dependencies": {
+    "aws-sdk": "^2.566.0",
+    "cfn-custom-resource": "^4.0.16",
+    "mime-types": "^2.1.24",
+    "npm": "^6.12.1",
+    "recursive-readdir": "^2.2.2"
+  }
+}

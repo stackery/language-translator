@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const cldrSegmentation = require('cldr-segmentation');
 const s3 = new AWS.S3();
 const translate = new AWS.Translate();
+const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async event => {
   // Log the event argument for debugging and for use in local development.
@@ -65,6 +66,21 @@ exports.handler = async event => {
 
     const putObjectResult = await s3.putObject(putObjectParams).promise();
     console.log(`Success uploading to S3: ${JSON.stringify(putObjectResult, null, '\t')}`);
+
+    const putDynamoParams = {
+      TableName: process.env.TABLE_NAME,
+      Item: {
+        Key,
+        SourceLanguageCode,
+        TargetLanguageCode,
+        OriginalText: Text,
+        TranslatedText: uploadText,
+        Timestamp: Date.now()
+      }
+    };
+
+    const putDynamoResult = await dynamodb.put(putDynamoParams).promise();
+    console.log(`Success writing to dynamoDB: ${JSON.stringify(putDynamoResult, null, '\t')}`);
   } catch (error) {
     console.log(`An error ocurred: ${JSON.stringify(error, null, '\t')}`);
   }

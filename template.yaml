@@ -5,6 +5,11 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub ${AWS::StackName}-originalf-${AWS::AccountId}
+      CorsConfiguration:
+        CorsRules:
+        - AllowedOrigins: ['*']
+          AllowedMethods: [PUT, POST, GET, DELETE]
+          AllowedHeaders: ['*']
   TranslatedFiles:
     Type: AWS::S3::Bucket
     Properties:
@@ -38,6 +43,8 @@ Resources:
               Resource: '*'
               Action:
                 - translate:TranslateText
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranslationsTable
       Events:
         OriginalFiles:
           Type: S3
@@ -49,6 +56,109 @@ Resources:
         Variables:
           BUCKET_NAME: !Ref TranslatedFiles
           BUCKET_ARN: !GetAtt TranslatedFiles.Arn
+          TABLE_NAME: !Ref TranslationsTable
+          TABLE_ARN: !GetAtt TranslationsTable.Arn
+  TranslationsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Key
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: Key
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      TableName: !Sub ${AWS::StackName}-TranslationsTable
+  Frontend:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-frontend-${AWS::AccountId}
+      WebsiteConfiguration:
+        IndexDocument: index.html
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub
+        - ${ResourceName} From Stack ${StackTagName} Environment ${EnvironmentTagName}
+        - ResourceName: Api
+      StageName: !Ref EnvironmentAPIGatewayStageName
+      DefinitionBody:
+        swagger: '2.0'
+        info: {}
+        paths:
+          /translations:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetTranslationsFunction.Arn}/invocations
+              responses: {}
+      EndpointConfiguration: REGIONAL
+      TracingEnabled: true
+      Cors:
+        AllowHeaders: '''Authorization,Content-Type'''
+        AllowOrigin: '''*'''
+  GetTranslationsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-GetTranslationsFunction
+      Description: !Sub
+        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
+        - ResourceName: GetTranslationsFunction
+      CodeUri: src/GetTranslationsFunction
+      Handler: index.handler
+      Runtime: nodejs10.x
+      MemorySize: 3008
+      Timeout: 30
+      Tracing: Active
+      Policies:
+        - AWSXrayWriteOnlyAccess
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranslationsTable
+      Events:
+        ApiGETtranslations:
+          Type: Api
+          Properties:
+            Path: /translations
+            Method: GET
+            RestApiId: !Ref Api
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TranslationsTable
+          TABLE_ARN: !GetAtt TranslationsTable.Arn
+  PopulateFrontend:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-PopulateFrontend
+      Description: !Sub
+        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
+        - ResourceName: PopulateFrontend
+      CodeUri: src/PopulateFrontend
+      Handler: index.handler
+      Runtime: nodejs10.x
+      MemorySize: 3008
+      Timeout: 900
+      Tracing: Active
+      Policies:
+        - AWSXrayWriteOnlyAccess
+        - S3CrudPolicy:
+            BucketName: !Ref Frontend
+        - S3CrudPolicy:
+            BucketName: !Ref OriginalFiles
+      Environment:
+        Variables:
+          API_URL: !Sub https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${Api.Stage}
+          FRONTEND_BUCKET_NAME: !Ref Frontend
+          ACCESS_KEY_ID: !Ref EnvConfigaccessKeyIdAsString
+          SECRET: !Ref EnvConfigsecretAsString
+          ORIGINAL_FILES_BUCKET_NAME: !Ref OriginalFiles
+  PopulateFrontendDeployTrigger:
+    Type: Custom::FunctionDeployTrigger
+    Properties:
+      ServiceToken: !GetAtt PopulateFrontend.Arn
+      DeploymentTimestamp: !Ref DeploymentTimestamp
 Parameters:
   StackTagName:
     Type: String
@@ -56,3 +166,19 @@ Parameters:
   EnvironmentTagName:
     Type: String
     Description: Environment Name (injected by Stackery at deployment time)
+  EnvironmentAPIGatewayStageName:
+    Type: String
+    Description: Environment name used for API Gateway Stage names (injected by Stackery at deployment time)
+  EnvConfigaccessKeyIdAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/accessKeyId
+  EnvConfigsecretAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/secret
+  DeploymentTimestamp:
+    Type: Number
+    Description: Deployment preparation timestamp in milliseconds Since Epoch (injected by Stackery at deployment time)
+Metadata:
+  EnvConfigParameters:
+    EnvConfigaccessKeyIdAsString: accessKeyId
+    EnvConfigsecretAsString: secret
