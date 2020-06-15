@@ -32,12 +32,12 @@ exports.handler = async event => {
      */
 
     const supportedLanguageExceptions = ['de', 'en', 'es', 'fr', 'it', 'pt', 'ru'];
-    let uliExceptions;
+    let supp;
 
     if (supportedLanguageExceptions.includes(SourceLanguageCode)) {
-      uliExceptions = cldrSegmentation.uliExceptions[SourceLanguageCode];
+      supp = cldrSegmentation.suppressions[SourceLanguageCode];
     }
-    const sentences = cldrSegmentation.sentenceSplit(Text, uliExceptions);
+    const sentences = cldrSegmentation.sentenceSplit(Text, supp);
     console.log(`Splitting into sentences: ${sentences}`);
 
     const results = [];

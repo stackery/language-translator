@@ -47,7 +47,6 @@ This is a tool that will translate text into another language. It is recommended
 ## Notes
 - DynamoDB has an item size [limit](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html#limits-items). GitHub issue with suggestions on how to fix this [here](https://github.com/stackery/language-translator/issues/6).
 - Supported language codes and pairs can be found [here](https://docs.aws.amazon.com/translate/latest/dg/what-is.html)
-- AWS Translate does some weird things with non `txt` files. For best results, we recommend using `txt` files only. GitHub issue for further investigation [here](https://github.com/stackery/language-translator/issues/4).
 
 ### Outstanding TODO Items / Open Bugs
 See [open issues](https://github.com/stackery/language-translator/issues)

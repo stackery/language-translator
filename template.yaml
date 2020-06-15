@@ -23,7 +23,7 @@ Resources:
         - ResourceName: TranslateFunction
       CodeUri: src/TranslateFunction
       Handler: index.handler
-      Runtime: nodejs10.x
+      Runtime: nodejs12.x
       MemorySize: 3008
       Timeout: 900
       Tracing: Active
@@ -109,7 +109,7 @@ Resources:
         - ResourceName: GetTranslationsFunction
       CodeUri: src/GetTranslationsFunction
       Handler: index.handler
-      Runtime: nodejs10.x
+      Runtime: nodejs12.x
       MemorySize: 3008
       Timeout: 30
       Tracing: Active
@@ -137,7 +137,7 @@ Resources:
         - ResourceName: PopulateFrontend
       CodeUri: src/PopulateFrontend
       Handler: index.handler
-      Runtime: nodejs10.x
+      Runtime: nodejs12.x
       MemorySize: 3008
       Timeout: 900
       Tracing: Active
