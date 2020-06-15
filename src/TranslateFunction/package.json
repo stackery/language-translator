@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "dependencies": {
     "aws-sdk": "~2",
-    "cldr-segmentation": "^1.0.0"
+    "cldr-segmentation": "^2.0.0"
   }
 }
